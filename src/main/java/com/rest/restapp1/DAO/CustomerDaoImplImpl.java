@@ -27,4 +27,16 @@ public class CustomerDaoImplImpl implements CustomerDAO{
         Customers customer = entityManager.find(Customers.class, id);
         return customer;
     }
+
+    @Override
+    public Customers addNewCustomer(Customers customers) {
+        Customers customers1 = entityManager.merge(customers);
+        return customers1;
+    }
+
+    @Override
+    public void deleteCustomer(int id) {
+        Customers customers = entityManager.find(Customers.class, id);
+        entityManager.remove(customers);
+    }
 }

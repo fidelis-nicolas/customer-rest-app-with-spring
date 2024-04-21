@@ -5,10 +5,7 @@ import com.rest.restapp1.DAO.CustomerDaoImplImpl;
 import com.rest.restapp1.entity.Customers;
 import com.rest.restapp1.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +28,16 @@ public class CustomerRestController {
         Customers customer = customerService.getCustomerbyID(customerID);
         return customer;
     }
+    @PostMapping("/customers")
+    public Customers addNewCustomer(@RequestBody Customers customers){
+        customers.setId(0);
+        Customers customers1 = customerService.addNewCustomer(customers);
+        return customers1;
+    }
+    @DeleteMapping("/customers/{id}")
+    public void deleteCustomer(@PathVariable int id){
+        customerService.deleteCustomer(id);
+    }
+
 
 }

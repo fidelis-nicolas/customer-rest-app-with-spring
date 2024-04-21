@@ -14,6 +14,7 @@ import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
+
     private final CustomerDAO customerDAO;
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
@@ -40,4 +41,17 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return customerDAO.getCustomerbyID(customerID);
     }
+
+    @Override
+    @Transactional
+    public Customers addNewCustomer(Customers customers) {
+        return customerDAO.addNewCustomer(customers);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCustomer(int id) {
+        customerDAO.deleteCustomer(id);
+    }
+
 }
