@@ -10,5 +10,7 @@ public interface CustomerDAO {
     Customers getCustomerbyID(int id);
 
     Customers addNewCustomer(Customers customers);
-    void deleteCustomer(int id);
+    void deleteCustomer(int customerId);
+
+    void updateCustomer(int customerId, String customerName, String customerEmail, long phoneNumber, String customerAddress);
 }

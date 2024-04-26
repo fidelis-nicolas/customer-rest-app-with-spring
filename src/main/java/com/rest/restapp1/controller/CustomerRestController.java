@@ -34,10 +34,15 @@ public class CustomerRestController {
         Customers customers1 = customerService.addNewCustomer(customers);
         return customers1;
     }
+
+    @PutMapping("/customers/{customerID}")
+    public void updateCustomer(@PathVariable int customerID, @RequestBody Customers requestBody){
+        customerService.updateCustomer(customerID, requestBody);
+    }
+
     @DeleteMapping("/customers/{id}")
     public void deleteCustomer(@PathVariable int id){
         customerService.deleteCustomer(id);
     }
-
 
 }

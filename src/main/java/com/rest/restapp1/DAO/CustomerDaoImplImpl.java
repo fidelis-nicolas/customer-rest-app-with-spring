@@ -39,4 +39,20 @@ public class CustomerDaoImplImpl implements CustomerDAO{
         Customers customers = entityManager.find(Customers.class, id);
         entityManager.remove(customers);
     }
+
+    @Override
+    public void updateCustomer(int id, String customerName, String customerEmail, long phoneNumber, String customerAddress){
+        entityManager.getEntityManagerFactory().createEntityManager();
+        entityManager.getTransaction().begin();
+
+        Customers customerId = entityManager.find(Customers.class, id);
+        customerId.setCustomerName(customerName);
+        customerId.setCustomerEmail(customerEmail);
+        customerId.setPhoneNumber(phoneNumber);
+        customerId.setCustomerAddress(customerAddress);
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+    }
 }

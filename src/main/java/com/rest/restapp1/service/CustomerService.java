@@ -8,5 +8,7 @@ public interface CustomerService {
     List<Customers> getAllCustomers();
     Customers getCustomerbyID(int id);
     Customers addNewCustomer(Customers customers);
-    void deleteCustomer(int id);
+    void deleteCustomer(int customerId);
+
+    void updateCustomer(int customerId, Customers requestBody);
 }
