@@ -23,14 +23,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerDAO customerDAO;
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
-
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
 
     @Autowired
-    public CustomerServiceImpl(CustomerDAO customerDAO) {
+    public CustomerServiceImpl(CustomerDAO customerDAO, DataSource dataSource) {
         this.customerDAO = customerDAO;
+        this.dataSource = dataSource;
 
     }
 
@@ -41,7 +40,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(readOnly = true)
-    //Not sure if I did this right though? Not sure if I retrieved the customerId right.
     public Customers getCustomerbyID(int customerID) {
         Customers customer = customerDAO.getCustomerbyID(customerID);
         if (customer == null) {
@@ -64,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public void updateCustomer(int customerId, Customers customer) {
+    public ResponseEntity<?> updateCustomer(int customerId, Customers customer) {
         Customers updatedCustomer =  customerDAO.getCustomerbyID(customerId);
         if(updatedCustomer == null){
             throw new CustomerNotFoundException("There is no customer with id: " + customerId);
@@ -81,7 +79,7 @@ public class CustomerServiceImpl implements CustomerService {
             if (isValidAddress(updatedCustomer.getCustomerAddress())) {
                 updatedCustomer.setCustomerAddress(customer.getCustomerAddress());
             }
-            ResponseEntity.ok("Customer updated!");
+            return ResponseEntity.ok("Customer updated!");
         }
     }
 
@@ -109,7 +107,7 @@ public class CustomerServiceImpl implements CustomerService {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); //We may need another strategy to handle exceptions and logs
+            logger.error("No customer with ID {} already exists ", customerId, e);
         }
         return false;
     }
@@ -129,7 +127,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private boolean isValidPhoneNumber(long phoneNumber) {
        //Validate based on length or pattern
-        // Always adjust regex as necessary for your needs
+       // Always adjust regex as necessary for your needs
         return Long.toString(phoneNumber).matches("\\d{10}");
     }
 

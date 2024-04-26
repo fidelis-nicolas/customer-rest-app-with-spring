@@ -10,6 +10,5 @@ public interface CustomerService {
     Customers getCustomerbyID(int id);
     ResponseEntity<?> addNewCustomer(Customers customers);
     void deleteCustomer(int customerId);
-
-    void updateCustomer(int customerId, Customers requestBody);
+    ResponseEntity<?> updateCustomer(int customerId, Customers requestBody);
 }
