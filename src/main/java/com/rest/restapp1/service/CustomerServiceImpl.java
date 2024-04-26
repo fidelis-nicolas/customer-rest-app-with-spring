@@ -1,6 +1,7 @@
 package com.rest.restapp1.service;
 
 import com.rest.restapp1.DAO.CustomerDAO;
+import com.rest.restapp1.Exceptions.CustomerExists;
 import com.rest.restapp1.Exceptions.CustomerNotFoundException;
 import com.rest.restapp1.entity.Customers;
 import org.slf4j.Logger;
@@ -10,6 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -17,6 +23,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerDAO customerDAO;
     private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
+
+    @Autowired
+    private DataSource dataSource;
 
 
     @Autowired
@@ -44,11 +53,17 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional
-    public Customers addNewCustomer(Customers customers) {
-        return customerDAO.addNewCustomer(customers);
+    public ResponseEntity<?> addNewCustomer(Customers customer) {
+        int getCustomerId = customer.getId();
+        if(customerExists(getCustomerId)){
+            throw new CustomerExists("There is already an existing customer with this id: " + customer.getId() + ". Try again with another.");
+        }
+        customerDAO.addNewCustomer(customer);
+        return ResponseEntity.ok("Customer added!");
     }
 
     @Override
+    @Transactional
     public void updateCustomer(int customerId, Customers customer) {
         Customers updatedCustomer =  customerDAO.getCustomerbyID(customerId);
         if(updatedCustomer == null){
@@ -81,6 +96,24 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerNotFoundException("There is no customer with id: " + customerId);
         }
     }
+
+    public boolean customerExists(int customerId) {
+        String query = "SELECT EXISTS(SELECT 1 FROM customers WHERE id = ?)";
+        try (
+                Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, customerId);  // Set the customer ID to the query
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean(1);  // Returns true if the customer exists, false otherwise
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); //We may need another strategy to handle exceptions and logs
+        }
+        return false;
+    }
+
 
     private boolean isValidName(String name) {
         return name != null && !name.trim().isEmpty();

@@ -1,10 +1,9 @@
 package com.rest.restapp1.controller;
 
-import com.rest.restapp1.DAO.CustomerDAO;
-import com.rest.restapp1.DAO.CustomerDaoImplImpl;
 import com.rest.restapp1.entity.Customers;
 import com.rest.restapp1.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +19,7 @@ public class CustomerRestController {
     }
     @GetMapping("/customers")
     public List<Customers> getAllCustomers(){
+        System.out.println("I am testing!");
         return customerService.getAllCustomers();
     }
 
@@ -29,9 +29,9 @@ public class CustomerRestController {
         return customer;
     }
     @PostMapping("/customers")
-    public Customers addNewCustomer(@RequestBody Customers customers){
+    public ResponseEntity<?> addNewCustomer(@RequestBody Customers customers){
         customers.setId(0);
-        Customers customers1 = customerService.addNewCustomer(customers);
+        ResponseEntity<?> customers1 = customerService.addNewCustomer(customers);
         return customers1;
     }
 
