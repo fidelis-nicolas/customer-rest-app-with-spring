@@ -44,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customers customer = customerDAO.getCustomerbyID(customerID);
         if (customer == null) {
             logger.error("No customer found for ID: {}", customerID);
-            throw new CustomerNotFoundException("There no customer for id: " + customerID);
+            throw new CustomerExists("There no customer for id: " + customerID);
         }
         return customerDAO.getCustomerbyID(customerID);
     }
@@ -65,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
     public ResponseEntity<?> updateCustomer(int customerId, Customers customer) {
         Customers updatedCustomer =  customerDAO.getCustomerbyID(customerId);
         if(updatedCustomer == null){
-            throw new CustomerNotFoundException("There is no customer with id: " + customerId);
+            throw new CustomerExists("There is no customer with id: " + customerId);
         }else{
             if (isValidName(updatedCustomer.getCustomerName())) {
                 updatedCustomer.setCustomerName(customer.getCustomerName());
@@ -91,7 +91,7 @@ public class CustomerServiceImpl implements CustomerService {
             customerDAO.deleteCustomer(customerId);
             ResponseEntity.ok("Customer Deleted");
         }else{
-            throw new CustomerNotFoundException("There is no customer with id: " + customerId);
+            throw new CustomerExists("There is no customer with id: " + customerId);
         }
     }
 
