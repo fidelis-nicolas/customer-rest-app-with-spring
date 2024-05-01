@@ -1,7 +1,6 @@
 package com.rest.restapp1.service;
 
 import com.rest.restapp1.DAO.CustomerDAO;
-import com.rest.restapp1.Exceptions.CustomerExists;
 import com.rest.restapp1.Exceptions.CustomerNotFoundException;
 import com.rest.restapp1.entity.Customers;
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customers customer = customerDAO.getCustomerbyID(customerID);
         if (customer == null) {
             logger.error("No customer found for ID: {}", customerID);
-            throw new CustomerExists("There no customer for id: " + customerID);
+            throw new CustomerNotFoundException("There no customer for id: " + customerID);
         }
         return customerDAO.getCustomerbyID(customerID);
     }
@@ -54,7 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
     public ResponseEntity<?> addNewCustomer(Customers customer) {
         int getCustomerId = customer.getId();
         if(customerExists(getCustomerId)){
-            throw new CustomerExists("There is already an existing customer with this id: " + customer.getId() + ". Try again with another.");
+            throw new CustomerNotFoundException("There is already an existing customer with this id: " + customer.getId() + ". Try again with another.");
         }
         customerDAO.addNewCustomer(customer);
         return ResponseEntity.ok("Customer added!");
@@ -65,7 +64,7 @@ public class CustomerServiceImpl implements CustomerService {
     public ResponseEntity<?> updateCustomer(int customerId, Customers customer) {
         Customers updatedCustomer =  customerDAO.getCustomerbyID(customerId);
         if(updatedCustomer == null){
-            throw new CustomerExists("There is no customer with id: " + customerId);
+            throw new CustomerNotFoundException("There is no customer with id: " + customerId);
         }else{
             if (isValidName(updatedCustomer.getCustomerName())) {
                 updatedCustomer.setCustomerName(customer.getCustomerName());
@@ -91,7 +90,7 @@ public class CustomerServiceImpl implements CustomerService {
             customerDAO.deleteCustomer(customerId);
             ResponseEntity.ok("Customer Deleted");
         }else{
-            throw new CustomerExists("There is no customer with id: " + customerId);
+            throw new CustomerNotFoundException("There is no customer with id: " + customerId);
         }
     }
 
