@@ -95,20 +95,22 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public boolean customerExists(int customerId) {
-        String query = "SELECT EXISTS(SELECT 1 FROM customers WHERE id = ?)";
+        boolean login = false;
+        String query = "SELECT * FROM customers WHERE id =? ;";
         try (
                 Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, customerId);  // Set the customer ID to the query
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getBoolean(1);  // Returns true if the customer exists, false otherwise
-                }
+            ps.setInt(1, customerId);
+            // Set the customer ID to the query
+            ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                     login = true;  // Returns true if the customer exists, false otherwise
             }
         } catch (SQLException e) {
             logger.error("No customer with ID {} already exists ", customerId, e);
         }
-        return false;
+       return login;
     }
 
 
