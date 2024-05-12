@@ -136,13 +136,13 @@ public class CustomerServiceImpl implements CustomerService {
        return flag;
     }
 
-    public boolean customerEmailCheck(String name) {
+    public boolean customerEmailCheck(String email) {
         boolean flag = false;
-        String query = "SELECT * FROM customers WHERE id =? ;";
+        String query = "SELECT customer_email FROM customers WHERE customer_email =? ;";
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, name);
+            ps.setString(1, email);
             // Set the customer ID to the query
             ResultSet rs = ps.executeQuery();
 
@@ -150,13 +150,13 @@ public class CustomerServiceImpl implements CustomerService {
                 flag = true;  // Returns true if the customer exists, false otherwise
             }
         } catch (SQLException e) {
-            logger.error("Error in checking customer with email address exists {}", name, e);
+            logger.error("Error in checking customer with email address exists {}", email, e);
         }
         return flag;
     }
 
     public boolean checkCustomerPhoneNumber(long phoneNumber) {
-        String query = "SELECT * FROM customers WHERE id = ?";
+        String query = "SELECT phone_number FROM customers WHERE phone_number = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setLong(1, phoneNumber);
