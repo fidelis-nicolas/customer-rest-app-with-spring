@@ -49,6 +49,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Customers getCustomerbyPhone(long id) {
+        return null;
+    }
+
+    @Override
     @Transactional
     public ResponseEntity<?> addNewCustomer(Customers customer) {
         int getCustomerId = customer.getId();
@@ -72,38 +77,39 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-    @Override
-    @Transactional
-    public ResponseEntity<?> updateCustomer(int customerId, Customers customer) {
-        Customers updatedCustomer =  customerDAO.getCustomerbyID(customerId);
-        if(updatedCustomer == null){
-            throw new CustomerNotFoundException("There is no customer with id: " + customerId);
-        }else{
-            if (isValidName(updatedCustomer.getCustomerName())) {
-                updatedCustomer.setCustomerName(customer.getCustomerName());
-            }
-            if (isValidEmail(updatedCustomer.getCustomerEmail())) {
-                updatedCustomer.setCustomerEmail(customer.getCustomerEmail());
-            }
-            if (isValidPhoneNumber(updatedCustomer.getPhoneNumber())) {
-                updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
-            }
-            if (isValidAddress(updatedCustomer.getCustomerAddress())) {
-                updatedCustomer.setCustomerAddress(customer.getCustomerAddress());
-            }
-            String getCustomerEmail = customer.getCustomerEmail();
-            if(customerEmailCheck(getCustomerEmail)){
-                throw new CustomerNotFoundException("This email address - " + customer.getCustomerEmail() +
-                        " is already associated with an account. " + ". Try again with another email");
-            }
-            long getCustomerPhoneNumber = customer.getPhoneNumber();
-            if(checkCustomerPhoneNumber(getCustomerPhoneNumber)){
-                throw new CustomerNotFoundException("There is already an existing customer with this id: " +
-                        customer.getPhoneNumber() + ". Try again with another.");
-            }
-            return ResponseEntity.ok("Customer updated!");
-        }
-    }
+//    @Override
+//    @Transactional
+//    public ResponseEntity<?> updateCustomer(int customerId, Customers customer) {
+//        Customers updatedCustomer =  customerDAO.getCustomerbyID(customerId);
+//        if(updatedCustomer == null){
+//            throw new CustomerNotFoundException("There is no customer with id: " + customerId);
+//        }else{
+//            if (isValidName(updatedCustomer.getCustomerName())) {
+//                updatedCustomer.setCustomerName(customer.getCustomerName());
+//            }
+//            if (isValidEmail(updatedCustomer.getCustomerEmail())) {
+//                updatedCustomer.setCustomerEmail(customer.getCustomerEmail());
+//            }
+//            if (isValidPhoneNumber(updatedCustomer.getPhoneNumber())) {
+//                updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
+//            }
+//            if (isValidAddress(updatedCustomer.getCustomerAddress())) {
+//                updatedCustomer.setCustomerAddress(customer.getCustomerAddress());
+//            }
+//            String getCustomerEmail = customer.getCustomerEmail();
+//            if(customerEmailCheck(getCustomerEmail)){
+//                throw new CustomerNotFoundException("This email address - " + customer.getCustomerEmail() +
+//                        " is already associated with an account. " + ". Try again with another email");
+//            }
+//            long getCustomerPhoneNumber = customer.getPhoneNumber();
+//            if(checkCustomerPhoneNumber(getCustomerPhoneNumber)){
+//                throw new CustomerNotFoundException("There is already an existing customer with this id: " +
+//                        customer.getPhoneNumber() + ". Try again with another.");
+//            }
+//           customerDAO.updateCustomer();
+//            return ResponseEntity.ok("Customer updated!");
+//        }
+//    }
 
     @Override
     @Transactional
@@ -115,6 +121,11 @@ public class CustomerServiceImpl implements CustomerService {
         }else{
             throw new CustomerNotFoundException("There is no customer with id: " + customerId);
         }
+    }
+
+    @Override
+    public Customers updateCustomers(Customers customers) {
+        return customerDAO.updateCustomers(customers);
     }
 
     public boolean customerExists(int customerId) {
@@ -138,6 +149,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     public boolean customerEmailCheck(String email) {
         boolean flag = false;
+        if(isValidEmail(email)){
         String query = "SELECT customer_email FROM customers WHERE customer_email =? ;";
         try (
                 Connection conn = dataSource.getConnection();
@@ -151,6 +163,8 @@ public class CustomerServiceImpl implements CustomerService {
             }
         } catch (SQLException e) {
             logger.error("Error in checking customer with email address exists {}", email, e);
+        }}else{
+            throw new CustomerNotFoundException(email + " is not valid.");
         }
         return flag;
     }

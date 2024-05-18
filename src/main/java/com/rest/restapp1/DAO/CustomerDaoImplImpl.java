@@ -29,6 +29,11 @@ public class CustomerDaoImplImpl implements CustomerDAO{
     }
 
     @Override
+    public Customers getCustomerbyPhoneNumber(long id) {
+        return null;
+    }
+
+    @Override
     public Customers addNewCustomer(Customers customers) {
         Customers customers1 = entityManager.merge(customers);
         return customers1;
@@ -41,18 +46,24 @@ public class CustomerDaoImplImpl implements CustomerDAO{
     }
 
     @Override
-    public void updateCustomer(int id, String customerName, String customerEmail, long phoneNumber, String customerAddress){
-        entityManager.getEntityManagerFactory().createEntityManager();
-        entityManager.getTransaction().begin();
-
-        Customers customerId = entityManager.find(Customers.class, id);
-        customerId.setCustomerName(customerName);
-        customerId.setCustomerEmail(customerEmail);
-        customerId.setPhoneNumber(phoneNumber);
-        customerId.setCustomerAddress(customerAddress);
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
-
+    public Customers updateCustomers(Customers customers) {
+        Customers updateCustomers = entityManager.merge(customers);
+        return updateCustomers;
     }
+
+//    @Override
+//    public void updateCustomer(int id, String customerName, String customerEmail, long phoneNumber, String customerAddress){
+//        entityManager.getEntityManagerFactory().createEntityManager();
+//        entityManager.getTransaction().begin();
+//
+//        Customers customerId = entityManager.find(Customers.class, id);
+//        customerId.setCustomerName(customerName);
+//        customerId.setCustomerEmail(customerEmail);
+//        customerId.setPhoneNumber(phoneNumber);
+//        customerId.setCustomerAddress(customerAddress);
+//
+//        entityManager.getTransaction().commit();
+//        entityManager.close();
+//
+//    }
 }
