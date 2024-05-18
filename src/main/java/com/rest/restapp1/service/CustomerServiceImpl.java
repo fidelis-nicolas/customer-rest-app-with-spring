@@ -124,7 +124,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customers updateCustomers(Customers customers) {
+    public Customers updateCustomer(Customers customers) {
         return customerDAO.updateCustomers(customers);
     }
 
