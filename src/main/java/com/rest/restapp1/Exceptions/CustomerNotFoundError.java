@@ -11,7 +11,6 @@ public class CustomerNotFoundError {
 
 
     @ExceptionHandler
-    //How do I use this? Can we work one out?
     public ResponseEntity<ErrorMessage> handleCustomerNotFoundError(CustomerNotFoundException exception) {
         ErrorMessage error = new ErrorMessage();
         error.setMessage(exception.getMessage());

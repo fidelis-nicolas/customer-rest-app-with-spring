@@ -38,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional //(readOnly = true)
     public Customers getCustomerbyID(int customerID) {
         Customers customer = customerDAO.getCustomerbyID(customerID);
         if (customer == null) {
@@ -46,11 +46,6 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerNotFoundException("There no customer for id: " + customerID);
         }
         return customerDAO.getCustomerbyID(customerID);
-    }
-
-    @Override
-    public Customers getCustomerbyPhone(long id) {
-        return null;
     }
 
     @Override
@@ -68,9 +63,10 @@ public class CustomerServiceImpl implements CustomerService {
             }
             long getCustomerPhoneNumber = customer.getPhoneNumber();
             if(checkCustomerPhoneNumber(getCustomerPhoneNumber)){
-                throw new CustomerNotFoundException("There is already an existing customer with this id: " +
+                throw new CustomerNotFoundException("There is already an existing customer with this phone number: " +
                         customer.getPhoneNumber() + ". Try again with another.");
             }
+
             customerDAO.addNewCustomer(customer);
             return ResponseEntity.ok("Customer added!");
         }
@@ -79,37 +75,23 @@ public class CustomerServiceImpl implements CustomerService {
 
 //    @Override
 //    @Transactional
-//    public ResponseEntity<?> updateCustomer(int customerId, Customers customer) {
-//        Customers updatedCustomer =  customerDAO.getCustomerbyID(customerId);
-//        if(updatedCustomer == null){
-//            throw new CustomerNotFoundException("There is no customer with id: " + customerId);
-//        }else{
-//            if (isValidName(updatedCustomer.getCustomerName())) {
-//                updatedCustomer.setCustomerName(customer.getCustomerName());
-//            }
-//            if (isValidEmail(updatedCustomer.getCustomerEmail())) {
-//                updatedCustomer.setCustomerEmail(customer.getCustomerEmail());
-//            }
-//            if (isValidPhoneNumber(updatedCustomer.getPhoneNumber())) {
-//                updatedCustomer.setPhoneNumber(customer.getPhoneNumber());
-//            }
-//            if (isValidAddress(updatedCustomer.getCustomerAddress())) {
-//                updatedCustomer.setCustomerAddress(customer.getCustomerAddress());
-//            }
-//            String getCustomerEmail = customer.getCustomerEmail();
-//            if(customerEmailCheck(getCustomerEmail)){
-//                throw new CustomerNotFoundException("This email address - " + customer.getCustomerEmail() +
-//                        " is already associated with an account. " + ". Try again with another email");
-//            }
-//            long getCustomerPhoneNumber = customer.getPhoneNumber();
-//            if(checkCustomerPhoneNumber(getCustomerPhoneNumber)){
-//                throw new CustomerNotFoundException("There is already an existing customer with this id: " +
-//                        customer.getPhoneNumber() + ". Try again with another.");
-//            }
-//           customerDAO.updateCustomer();
-//            return ResponseEntity.ok("Customer updated!");
-//        }
+//    public Customers updateCustomer(Customers customers) {
+//        return customerDAO.updateCustomers(customers);
 //    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<String> updateCustomer(Customers customer) {
+        int getCustomerId = customer.getId();
+        if(customerExists(getCustomerId)){
+              customerDAO.updateCustomers(customer);
+                return ResponseEntity.ok("Customer updated successfully!");
+
+               }else {
+            throw new CustomerNotFoundException("There is no existing customer with this id!");
+        }
+    }
+
 
     @Override
     @Transactional
@@ -123,10 +105,6 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    @Override
-    public Customers updateCustomer(Customers customers) {
-        return customerDAO.updateCustomers(customers);
-    }
 
     public boolean customerExists(int customerId) {
         boolean flag = false;
@@ -163,26 +141,84 @@ public class CustomerServiceImpl implements CustomerService {
             }
         } catch (SQLException e) {
             logger.error("Error in checking customer with email address exists {}", email, e);
-        }}else{
-            throw new CustomerNotFoundException(email + " is not valid.");
+        }
+        }else{
+            throw new CustomerNotFoundException(email + " is not a valid email address!");
         }
         return flag;
     }
 
     public boolean checkCustomerPhoneNumber(long phoneNumber) {
-        String query = "SELECT phone_number FROM customers WHERE phone_number = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setLong(1, phoneNumber);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return true; // Customer exists
-            }
-        } catch (SQLException e) {
-            logger.error("Error checking if customer with phone number {} exists", phoneNumber, e);
-            throw new RuntimeException("Database query failed", e);
+        if (isValidPhoneNumber(phoneNumber)){
+            String query = "SELECT phone_number FROM customers WHERE phone_number = ?";
+            try (Connection conn = dataSource.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setLong(1, phoneNumber);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return true; // Customer exists
+                }
+            } catch (SQLException e) {
+                logger.error("Error checking if customer with phone number {} exists", phoneNumber, e);
+                throw new RuntimeException("Database query failed", e);
+            }}else {
+            throw new CustomerNotFoundException(phoneNumber + " not valid!");
+
         }
+
         return false;
+    }
+
+
+    /*Since multiple individuals can live in the same address, we will avoid this verification.
+    However, we may use it in the future for further validations.
+    * */
+    public boolean checkValidAddress(String address) {
+        if (isValidAddress(address)){
+            String query = "SELECT customer_address FROM customers WHERE customer_address = ?";
+            try (Connection conn = dataSource.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, address);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return true; // address exists
+                }
+            } catch (SQLException e) {
+                logger.error("Error checking if customer with phone number {} exists", address, e);
+                throw new RuntimeException("Database query failed", e);
+            }}else {
+            throw new CustomerNotFoundException(address + " not a valid address!");
+
+        }
+
+        return false;
+    }
+
+
+    /*Since multiple individuals can have same name and last name, we will avoid this verification.
+    However, we may use it in the future for further validations.
+    * */
+    public boolean check_forValidName(String name) {
+        boolean flag = false;
+        if(isValidName(name)){
+            String query = "SELECT customer_name FROM customers WHERE customer_name =? ;";
+            try (
+                    Connection conn = dataSource.getConnection();
+                    PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, name);
+                // Set the customer ID to the query
+                ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    flag = true;  // Returns true if the customer exists, false otherwise
+                }
+            } catch (SQLException e) {
+                logger.error("Error in checking customer with email address exists {}", name, e);
+            }
+        }else{
+            throw new CustomerNotFoundException(name + " is not valid!");
+        }
+        return flag;
     }
 
 

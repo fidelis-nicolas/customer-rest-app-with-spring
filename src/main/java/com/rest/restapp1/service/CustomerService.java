@@ -9,9 +9,8 @@ import java.util.List;
 public interface CustomerService {
     List<Customers> getAllCustomers();
     Customers getCustomerbyID(int id);
-
-    Customers getCustomerbyPhone(long id);
     ResponseEntity<?> addNewCustomer(Customers customers);
     void deleteCustomer(int customerId);
-    Customers updateCustomer(Customers customers);
+    ResponseEntity<String> updateCustomer(Customers customer);
+
 }

@@ -29,11 +29,6 @@ public class CustomerDaoImplImpl implements CustomerDAO{
     }
 
     @Override
-    public Customers getCustomerbyPhoneNumber(long id) {
-        return null;
-    }
-
-    @Override
     public Customers addNewCustomer(Customers customers) {
         Customers customers1 = entityManager.merge(customers);
         return customers1;

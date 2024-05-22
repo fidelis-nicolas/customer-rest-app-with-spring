@@ -10,4 +10,9 @@ class Restapp1ApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void dummyTest(){
+
+	}
+
 }
