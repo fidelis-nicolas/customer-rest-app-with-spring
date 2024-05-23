@@ -35,9 +35,9 @@ public class CustomerRestController {
         return customers1;
     }
 
-    @PutMapping("/customers/{customerID}")
-    public  ResponseEntity<?> updateCustomer(@RequestBody Customers requestBody){
-        ResponseEntity<String> customer =  customerService.updateCustomer(requestBody);
+    @PutMapping("/customers")
+    public  Customers updateCustomer(@RequestBody Customers requestBody){
+        Customers customer =  customerService.updateCustomer(requestBody);
         return customer;
     }
 

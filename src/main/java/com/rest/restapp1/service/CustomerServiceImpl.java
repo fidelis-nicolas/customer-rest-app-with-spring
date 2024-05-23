@@ -73,24 +73,32 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
-//    @Override
-//    @Transactional
-//    public Customers updateCustomer(Customers customers) {
-//        return customerDAO.updateCustomers(customers);
-//    }
-
     @Override
     @Transactional
-    public ResponseEntity<String> updateCustomer(Customers customer) {
-        int getCustomerId = customer.getId();
-        if(customerExists(getCustomerId)){
-              customerDAO.updateCustomers(customer);
-                return ResponseEntity.ok("Customer updated successfully!");
+    public Customers updateCustomer(Customers customers) {
+        Customers updateCustomers;
+        if(isValidEmail(customers.getCustomerEmail()) && isValidPhoneNumber(customers.getPhoneNumber())){
+            updateCustomers = customerDAO.updateCustomers(customers);
+        }else{
+            throw new CustomerNotFoundException("Your email address or phone Number is invalid. " +
+                    "Confirm that both are valid and try again.");
 
-               }else {
-            throw new CustomerNotFoundException("There is no existing customer with this id!");
         }
+        return updateCustomers;
     }
+
+//    @Override
+//    @Transactional
+//    public ResponseEntity<String> updateCustomer(Customers customer) {
+//        int getCustomerId = customer.getId();
+//        if(customerExists(getCustomerId)){
+//              customerDAO.updateCustomers(customer);
+//                return ResponseEntity.ok("Customer updated successfully!");
+//
+//               }else {
+//            throw new CustomerNotFoundException("There is no existing customer with this id!");
+//        }
+//    }
 
 
     @Override

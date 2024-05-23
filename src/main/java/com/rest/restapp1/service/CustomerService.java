@@ -11,6 +11,6 @@ public interface CustomerService {
     Customers getCustomerbyID(int id);
     ResponseEntity<?> addNewCustomer(Customers customers);
     void deleteCustomer(int customerId);
-    ResponseEntity<String> updateCustomer(Customers customer);
+    Customers updateCustomer(Customers customer);
 
 }
