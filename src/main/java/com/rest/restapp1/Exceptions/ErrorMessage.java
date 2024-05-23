@@ -4,9 +4,9 @@ public class ErrorMessage{
 
     private int status;
     private String message;
-    private long timeStamp;
+    private String timeStamp;
 
-    public ErrorMessage(int status, String message, long timeStamp){
+    public ErrorMessage(int status, String message, String timeStamp){
         this.status = status;
         this.message = message;
         this.timeStamp = timeStamp;
@@ -19,11 +19,11 @@ public class ErrorMessage{
         this.message = message;
     }
 
-    public long getTime() {
+    public String getTime() {
         return timeStamp;
     }
 
-    public void setTimestamp(long timeStamp) {
+    public void setTimestamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 
