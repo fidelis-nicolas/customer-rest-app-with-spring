@@ -5,8 +5,10 @@ import com.rest.restapp1.entity.Customers;
 import com.rest.restapp1.service.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
@@ -15,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class Restapp1ApplicationTests {
 	@Mock
 	CustomerDAO customerDAO;
@@ -33,7 +35,7 @@ class Restapp1ApplicationTests {
 		customers.setCustomerEmail("test@yahoo.com");
 		customers.setCustomerName("John Doe");
 		customers.setPhoneNumber(1234567890);
-		customers.setCustomerAddress("123 twstingtreet Ave.");
+		customers.setCustomerAddress("123 twisting street Ave.");
 	}
 
 	@Test

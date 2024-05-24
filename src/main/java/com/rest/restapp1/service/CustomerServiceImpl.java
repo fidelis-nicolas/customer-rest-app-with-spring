@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
             logger.error("No customer found for ID: {}", customerID);
             throw new CustomerNotFoundException("There is no customer for id: " + customerID);
         }
-        return customerDAO.getCustomerbyID(customerID);
+        return customer;
     }
 
     @Override
