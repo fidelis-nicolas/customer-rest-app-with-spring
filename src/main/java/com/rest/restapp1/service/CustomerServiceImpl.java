@@ -80,8 +80,8 @@ public class CustomerServiceImpl implements CustomerService {
         if(isValidName(customers.getCustomerName()) && isValidEmail(customers.getCustomerEmail()) && isValidPhoneNumber(customers.getPhoneNumber()) && isValidAddress(customers.getCustomerAddress())){
             updateCustomers = customerDAO.updateCustomers(customers);
         }else{
-            throw new CustomerNotFoundException("Kindly check your name, email address, phone number " +
-                    "and address and confirm that all are valid. All entries are required to proceed.");
+            throw new CustomerNotFoundException("Kindly check your name, email, phone number " +
+                    "and address. Confirm that all are valid. All entries are required to proceed.");
 
         }
         return updateCustomers;
