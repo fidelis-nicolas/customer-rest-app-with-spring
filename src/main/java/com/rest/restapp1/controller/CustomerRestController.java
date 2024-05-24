@@ -17,17 +17,21 @@ public class CustomerRestController {
     public CustomerRestController(CustomerService customerService){
         this.customerService = customerService;
     }
+
+
     @GetMapping("/customers")
     public List<Customers> getAllCustomers(){
         System.out.println("I am testing!");
         return customerService.getAllCustomers();
     }
 
+
     @GetMapping("/customers/{customerID}")
     public Customers getCustomerByID(@PathVariable int customerID){
         Customers customer = customerService.getCustomerbyID(customerID);
         return customer;
     }
+
     @PostMapping("/customers")
     public ResponseEntity<?> addNewCustomer(@RequestBody Customers customers){
         customers.setId(0);
@@ -35,11 +39,13 @@ public class CustomerRestController {
         return customers1;
     }
 
+
     @PutMapping("/customers")
     public  Customers updateCustomer(@RequestBody Customers requestBody){
         Customers customer =  customerService.updateCustomer(requestBody);
         return customer;
     }
+
 
     @DeleteMapping("/customers/{id}")
     public void deleteCustomer(@PathVariable int id){
