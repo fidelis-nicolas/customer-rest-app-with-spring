@@ -43,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customers customer = customerDAO.getCustomerbyID(customerID);
         if (customer == null) {
             logger.error("No customer found for ID: {}", customerID);
-            throw new CustomerNotFoundException("There no customer for id: " + customerID);
+            throw new CustomerNotFoundException("There is no customer for id: " + customerID);
         }
         return customerDAO.getCustomerbyID(customerID);
     }
@@ -77,11 +77,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public Customers updateCustomer(Customers customers) {
         Customers updateCustomers;
-        if(isValidEmail(customers.getCustomerEmail()) && isValidPhoneNumber(customers.getPhoneNumber()) && isValidAddress(customers.getCustomerAddress())){
+        if(isValidName(customers.getCustomerName()) && isValidEmail(customers.getCustomerEmail()) && isValidPhoneNumber(customers.getPhoneNumber()) && isValidAddress(customers.getCustomerAddress())){
             updateCustomers = customerDAO.updateCustomers(customers);
         }else{
-            throw new CustomerNotFoundException("Dear esteemed customer, kindly check your email address, phone number " +
-                    "and address and confirm that all are valid. Please, non of these should be empty.");
+            throw new CustomerNotFoundException("Kindly check your name, email address, phone number " +
+                    "and address and confirm that all are valid. All entries are required to proceed.");
 
         }
         return updateCustomers;
