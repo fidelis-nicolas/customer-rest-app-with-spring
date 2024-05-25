@@ -76,15 +76,22 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Customers updateCustomer(Customers customers) {
-        Customers updateCustomers;
-        if(isValidName(customers.getCustomerName()) && isValidEmail(customers.getCustomerEmail()) && isValidPhoneNumber(customers.getPhoneNumber()) && isValidAddress(customers.getCustomerAddress())){
-            updateCustomers = customerDAO.updateCustomers(customers);
-        }else{
-            throw new CustomerNotFoundException("Kindly check your name, email, phone number " +
-                    "and address. Confirm that all are valid. All entries are required to proceed.");
+        int getCustomerId = customers.getId();
+        if (customerExists(getCustomerId)) {
+            if (isValidName(customers.getCustomerName()) &&
+                    isValidEmail(customers.getCustomerEmail()) &&
+                    isValidPhoneNumber(customers.getPhoneNumber()) &&
+                    isValidAddress(customers.getCustomerAddress())){
 
+                return customerDAO.updateCustomers(customers);
+            } else {
+                throw new CustomerNotFoundException("Kindly check your name, email, phone number, " +
+                        "and address. Confirm that all are valid. All entries are required to proceed.");
+            }
+        } else {
+            throw new CustomerNotFoundException("Customer with ID " + getCustomerId + " does not exist. "
+            + "Kindly add as a new customer.");
         }
-        return updateCustomers;
     }
 
 
