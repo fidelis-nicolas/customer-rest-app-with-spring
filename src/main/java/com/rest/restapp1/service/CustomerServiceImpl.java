@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
             String getCustomerEmail = customer.getCustomerEmail();
             if(customerEmailCheck(getCustomerEmail)){
                 throw new CustomerNotFoundException("This email address - " + customer.getCustomerEmail() +
-                        " is already associated with an account. " + ". Try again with another email");
+                        " is already associated with an account. " + " Try again with another email");
             }
             long getCustomerPhoneNumber = customer.getPhoneNumber();
             if(checkCustomerPhoneNumber(getCustomerPhoneNumber)){
