@@ -26,6 +26,19 @@ public class CustomerRestController {
     }
 
 
+    @GetMapping("/customers/{customerID}")
+    public Customers getCustomerByID(@PathVariable int customerID){
+        Customers customer = customerService.getCustomerbyID(customerID);
+        return customer;
+    }
+
+    @PostMapping("/customers")
+    public ResponseEntity<?> addNewCustomer(@RequestBody Customers customers){
+        customers.setId(0);
+        ResponseEntity<?> customers1 = customerService.addNewCustomer(customers);
+        return customers1;
+    }
+
 
     @PutMapping("/customers")
     public  Customers updateCustomer(@RequestBody Customers requestBody){
